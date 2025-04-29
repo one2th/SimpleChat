@@ -76,6 +76,7 @@ def connect():
         is_connected = True
         is_running = False
         win.window.bind('<Key>', on_close)
+        return
     is_connected = True
 
     win.clear_output()
@@ -133,7 +134,7 @@ def get_message():
             with output_lock:
                 win.output(f'{src_name}({src_ip}): {mess}')
 
-def on_close():
+def on_close(event):
     global is_running
     is_running = False
     conn_thr.join()
