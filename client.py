@@ -104,6 +104,7 @@ def get_conn_mess():
             win.output(f'Пользователь {new_name}({new_ip}) {"подключён" if mess_type == NEW_CONN else "отключён"}.')
 
 def send_message():
+    win.error('')
     mess = win.input()
     if not mess.find('\\') == -1:
         win.error('Недопустимый символ "\\"')
@@ -114,6 +115,7 @@ def send_message():
     win.clear_input()
 
 def get_message():
+    global is_running
     while not is_connected:
         pass
     with sock_tcp:
@@ -124,6 +126,11 @@ def get_message():
             except TimeoutError:
                 time.sleep(0.01)
                 continue
+            if not pack:
+                win.output(string = 'Сервер недоступен. Нажмите любую клавишу для выхода...')
+                win.hide_input()
+                is_running = False
+                win.window.bind('<Key>', on_close)
             if pack[:5]!=SIGN:
                 continue
             mess_len = pack[5]
@@ -134,7 +141,7 @@ def get_message():
             with output_lock:
                 win.output(f'{src_name}({src_ip}): {mess}')
 
-def on_close(event):
+def on_close(event = None):
     global is_running
     is_running = False
     conn_thr.join()
