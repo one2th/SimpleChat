@@ -133,6 +133,10 @@ def main():
                     break
                 if message[:5]!=SIGN:
                     continue
+                text_len = message[5]
+                text = message[6:6+text_len].decode()
+                print(f'[INFO] [{datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')}]\n'
+                      f'Сообщение от {user.name}({user.ip}): {text}')
                 message = message + struct.pack('!b', len(user.name)) + user.name.encode() + \
                           socket.inet_aton(user.ip)
                 with us_list_lock:
