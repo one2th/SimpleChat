@@ -109,7 +109,8 @@ def send_message():
     if not mess.find('\\') == -1:
         win.error('Недопустимый символ "\\"')
         return
-    mess = SIGN + struct.pack('!b', len(mess)) + mess.encode()
+    mess = mess.encode()
+    mess = SIGN + struct.pack('!b', len(mess)) + mess
     with tcp_lock:
         sock_tcp.send(mess)
     win.clear_input()
